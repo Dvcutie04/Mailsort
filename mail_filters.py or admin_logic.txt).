@@ -1,0 +1,28 @@
+# Mailsort Administrative Logic v1.0
+# Purpose: Filter spam/marketing and resize/reformat important business data.
+
+import re
+
+class MailSorter:
+    def __init__(self):
+        self.priority_keywords = ["UAGC", "Audio Bodyguard", "Project", "Invoice"]
+        self.marketing_keywords = ["Unsubscribe", "Sale", "Promotion", "Offer"]
+
+    def process_email(self, sender, subject, body):
+        # 1. Check for Priority Subjects
+        if any(key.lower() in subject.lower() for key in self.priority_keywords):
+            return self.format_output("PRIORITY", sender, subject, body)
+        
+        # 2. Filter Spam/Marketing
+        if any(key.lower() in body.lower() for key in self.marketing_keywords):
+            return "FILTERED: Marketing/Spam"
+            
+        return "STAGING: General Correspondence"
+
+    def format_output(self, status, sender, subject, body):
+        # Clean up formatting and resize text block for readability
+        clean_body = body.strip().replace("\n\n", "\n")
+        return f"[{status}] FROM: {sender}\nSUBJECT: {subject}\n---\n{clean_body}"
+
+# Initialize Sorter for Principal Investigator
+sorter = MailSorter()
